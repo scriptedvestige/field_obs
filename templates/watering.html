@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Fertilizer Log{% endblock %}
+
+{% block content %}
+    <h1>Fertilizer Event Log</h1>
+    <form id="fertilizer_form" method="POST" action="/fertilizer">
+
+        <fieldset>
+            <legend>Zone</legend>
+            <label><input type="checkbox" name="zones" value="cab_sauv"> Cab Sauv</label><br>
+            <label><input type="checkbox" name="zones" value="merlot"> Merlot</label><br>
+            <label><input type="checkbox" name="zones" value="riesling"> Riesling</label><br>
+            <label><input type="checkbox" name="zones" value="northeast_roses"> Northeast Roses</label><br>
+            <label><input type="checkbox" name="zones" value="northwest_roses"> Northwest Roses</label><br>
+            <label><input type="checkbox" name="zones" value="southeast_roses"> Southeast Roses</label><br>
+            <label><input type="checkbox" name="zones" value="southwest_roses"> Southwest Roses</label><br>
+            <label><input type="checkbox" name="zones" value="north_pine"> North Pine</label><br>
+            <label><input type="checkbox" name="zones" value="east_pines"> East Pines</label><br>
+            <label><input type="checkbox" name="zones" value="south_pine"> South Pine</label>
+        </fieldset>
+        <br>
+
+        <label>Duration (Minutes):
+            <input type="number" step="0.1" name="duration" id="duration_input">
+        </label>
+        <br>
+
+        <label>Application Method:
+            <select name="application_method">
+                <option value="">-- Optional --</option>
+                <option value="hose">Hose</option>
+                <option value="drip_line">Drip Line</option>
+                <option value="pitcher">Pitcher</option>
+            </select>
+        </label>
+        <br>
+
+        <label>Notes:
+            <input type="text" name="notes">
+        </label>
+        <br>
+
+        <button type="submit">Log Event</button>
+    </form>
+{% endblock %}
+
+{% block back_link %}
+    <a href="{{ url_for('menu') }}">Back to Menu</a>
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

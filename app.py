@@ -8,10 +8,12 @@ app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+# Main Menu
 @app.get("/menu", name="menu")
 def menu(request: Request):
     return templates.TemplateResponse("index.html", {"request":request})
 
+# Fertilizer Events
 @app.get("/fertilizer", name="fertilizer")
 def fertilizer_form(request: Request):
     return templates.TemplateResponse("fertilizer.html", {"request":request})
@@ -46,7 +48,7 @@ def log_fertilizer(
 
     return RedirectResponse("/fertilizer", status_code=303)
 
-
+# Snow Events
 @app.get("/snow", name="snow")
 def snow_form(request: Request):
     return templates.TemplateResponse("snow.html", {"request":request})
@@ -80,6 +82,7 @@ def log_snow(
 
     return RedirectResponse("/snow", status_code=303)
 
+# Disease/Pest Treatment Events
 @app.get("/treatment", name="treatment")
 def treatment_form(request: Request):
     return templates.TemplateResponse("treatment.html", {"request":request})
@@ -111,3 +114,32 @@ def log_treatment(
     conn.close()
 
     return RedirectResponse("/treatment", status_code=303)
+
+# Watering Events
+@app.get("/watering", name="watering")
+def watering_form(request: Request):
+    return templates.TemplateResponse("watering.html", {"request":request})
+
+@app.post("/watering")
+def log_watering(
+    request: Request,
+    zones: list[str] = Form(...),
+    duration: float | None = Form(None),
+    application_method: str | None = Form(None),
+    notes: str | None = Form(None),
+):
+    conn = get_conn()
+    cur = conn.cursor()
+    for zone in zones:
+        cur.execute(
+            """
+            INSERT INTO manual.watering_events (zone, duration, notes)
+            VALUES (%s, %s, %s, %s)
+            """,
+            (zone, duration, application_method, notes)
+        )
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return RedirectResponse("/watering", status_code=303)
