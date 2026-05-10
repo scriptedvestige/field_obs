@@ -6,18 +6,16 @@
     <h1>Fertilizer Event Log</h1>
     <form id="fertilizer_form" method="POST" action="/fertilizer">
 
-        <label>Zone:
-            <select name="zone" required>
-                <option value="" disabled selected>Select Zone</option>
-                <option value="cab_sauv">Cab Sauv</option>
-                <option value="merlot">Merlot</option>
-                <option value="riesling">Riesling</option>
-                <option value="northeast_roses">Northeast Roses</option>
-                <option value="northwest_roses">Northwest Roses</option>
-                <option value="southeast_roses">Southeast Roses</option>
-                <option value="southwest_roses">Southwest Roses</option>
-            </select>
-        </label>
+        <fieldset>
+            <legend>Zone</legend>
+            <label><input type="checkbox" name="zones" value="cab_sauv"> Cab Sauv</label><br>
+            <label><input type="checkbox" name="zones" value="merlot"> Merlot</label><br>
+            <label><input type="checkbox" name="zones" value="riesling"> Riesling</label><br>
+            <label><input type="checkbox" name="zones" value="northeast_roses"> Northeast Roses</label><br>
+            <label><input type="checkbox" name="zones" value="northwest_roses"> Northwest Roses</label><br>
+            <label><input type="checkbox" name="zones" value="southeast_roses"> Southeast Roses</label><br>
+            <label><input type="checkbox" name="zones" value="southwest_roses"> Southwest Roses</label>
+        </fieldset>
         <br>
 
         <label>Fertilizer Name:

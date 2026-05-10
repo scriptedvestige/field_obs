@@ -18,7 +18,7 @@ def fertilizer_form(request: Request):
 
 @app.post("/fertilizer")
 def log_fertilizer(
-    zone: str = Form(...),
+    zones: list[str] = Form(...),
     fertilizer_name: str = Form(...),
     amount: float | None = Form(None),
     amount_unit: str | None = Form(None),
@@ -31,19 +31,21 @@ def log_fertilizer(
 ):
     conn = get_conn()
     cur = conn.cursor()
-    cur.execute(
-        """
-        INSERT INTO manual.fertilizer_events 
+    for zone in zones:
+        cur.execute(
+            """
+            INSERT INTO manual.fertilizer_events 
+                (zone, fertilizer_name, amount, amount_unit, application_method, nutrients, nitrogen, phosphorus, potassium, notes)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """,
             (zone, fertilizer_name, amount, amount_unit, application_method, nutrients, nitrogen, phosphorus, potassium, notes)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """,
-        (zone, fertilizer_name, amount, amount_unit, application_method, nutrients, nitrogen, phosphorus, potassium, notes)
-    )
+        )
     conn.commit()
     cur.close()
     conn.close()
 
     return RedirectResponse("/fertilizer", status_code=303)
+
 
 @app.get("/snow", name="snow")
 def snow_form(request: Request):
@@ -77,3 +79,35 @@ def log_snow(
     conn.close()
 
     return RedirectResponse("/snow", status_code=303)
+
+@app.get("/treatment", name="treatment")
+def treatment_form(request: Request):
+    return templates.TemplateResponse("treatment.html", {"request":request})
+
+@app.post("/treatment")
+def log_treatment(
+    request: Request,
+    zones: list[str] = Form(...),
+    treatment_type: str = Form(...),
+    product_name: str = Form(...),
+    target: str | None = Form(None),
+    amount: float | None = Form(None),
+    amount_unit: str | None = Form(None),
+    application_method: str | None = Form(None),
+    notes: str | None = Form(None),
+):
+    conn = get_conn()
+    cur = conn.cursor()
+    for zone in zones:
+        cur.execute(
+            """
+            INSERT INTO manual.treatment_events (zone, treatment_type, product_name, target, amount, amount_unit, application_method, notes)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """,
+            (zone, treatment_type, product_name, target, amount, amount_unit, application_method, notes)
+        )
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return RedirectResponse("/treatment", status_code=303)
