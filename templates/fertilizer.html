@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fertilizer Log</title>
-    <link rel="stylesheet" href="/static/styles.css">
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}Fertilizer Log{% endblock %}
+
+{% block content %}
     <h1>Fertilizer Event Log</h1>
     <form id="fertilizer_form" method="POST" action="/fertilizer">
 
@@ -94,30 +90,31 @@
 
         <button type="submit">Log Event</button>
     </form>
+{% endblock %}
 
+{% block back_link %}
     <a href="{{ url_for('menu') }}">Back to Menu</a>
+{% endblock %}
 
-    <script>
-        function toggleNutrients() {
-            const mode = document.querySelector('input[name="nutrient_mode"]:checked').value;
+{% block scripts %}
+<script>
+    function toggleNutrients() {
+        const mode = document.querySelector('input[name="nutrient_mode"]:checked').value;
 
-            const freetextFields = document.getElementById("freetext_fields");
-            const npkFields = document.getElementById("npk_fields");
+        const freetextFields = document.getElementById("freetext_fields");
+        const npkFields = document.getElementById("npk_fields");
 
-            if (mode === "freetext") {
-                freetextFields.style.display = "block";
-                npkFields.style.display = "none";
-                // Clear N-P-K fields
-                document.getElementById("nitrogen_input").value = "";
-                document.getElementById("phosphorus_input").value = "";
-                document.getElementById("potassium_input").value = "";
-            } else if (mode === "npk") {
-                npkFields.style.display = "block";
-                freetextFields.style.display = "none";
-                // Clear freetext field
-                document.getElementById("nutrients_input").value = "";
-            }
+        if (mode === "freetext") {
+            freetextFields.style.display = "block";
+            npkFields.style.display = "none";
+            document.getElementById("nitrogen_input").value = "";
+            document.getElementById("phosphorus_input").value = "";
+            document.getElementById("potassium_input").value = "";
+        } else if (mode === "npk") {
+            npkFields.style.display = "block";
+            freetextFields.style.display = "none";
+            document.getElementById("nutrients_input").value = "";
         }
-    </script>
-</body>
-</html>
+    }
+</script>
+{% endblock %}

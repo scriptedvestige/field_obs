@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snow Log</title>
-    <link rel="stylesheet" href="/static/styles.css">
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}Snow Log{% endblock %}
+
+{% block content %}
     <h1>Snow Event Log</h1>
     <form id="snow_form" method="POST" action="/snow">
         <label>Event Type:
@@ -53,35 +49,36 @@
 
         <button type="submit">Log Event</button>
     </form>
+{% endblock %}
 
+{% block back_link %}
     <a href="{{ url_for('menu') }}">Back to Menu</a>
+{% endblock %}
 
-    <script>
-        function toggleDepth() {
-            const eventType = document.getElementById("event_type").value;
-            const depthLabel = document.getElementById("depth_label");
-            if (eventType === "dusting") {
-                depthLabel.style.display = "none";
-            } else if (eventType === "complete_melt") {
-                depthLabel.value = 0;
-                depthLabel.style.display = "none";
-            } else {
-                depthLabel.style.display = "block";
+{% block scripts %}
+<script>
+    function toggleDepth() {
+        const eventType = document.getElementById("event_type").value;
+        const depthLabel = document.getElementById("depth_label");
+        if (eventType === "dusting") {
+            depthLabel.style.display = "none";
+        } else if (eventType === "complete_melt") {
+            depthLabel.style.display = "none";
+        } else {
+            depthLabel.style.display = "block";
+        }
+    }
+
+    function validateDepthValues() {
+        const eventType = document.getElementById("event_type").value;
+        const depth = parseFloat(document.getElementById("depth_input").value);
+        if (eventType === "fresh_snow" || eventType === "melting") {
+            if (isNaN(depth) || depth < 0.1) {
+                alert("Depth must be greater than 0.1 for fresh snow or melting.");
             }
         }
+    }
 
-        function validateDepthValues(){
-            const eventType = document.getElementById("event_type").value;
-            const depthLabel = parseFloat(document.getElementById("depth_label").value);
-            const depth = parseFloat(depthLabel);
-            if (eventType === "fresh_snow" || eventType === "melting") {
-                if (isNaN(depth) || depth < 0.1) {
-                    alert("Depth must be greater than .1 for fresh snow or melting.");
-                }
-            }
-        }
-
-        toggleDepth(); // initial load
-    </script>
-</body>
-</html>
+    toggleDepth(); // initial load
+</script>
+{% endblock %}
