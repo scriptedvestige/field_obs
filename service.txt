@@ -1,0 +1,33 @@
+sudo nano /etc/systemd/system/field_obs.service
+
+-----
+
+[Unit]
+Description=Manual Field Observations
+After=network.target
+
+[Service]
+User=prax
+Group=prax
+WorkingDirectory=/opt/field_obs
+ExecStart=/opt/field_obs/venv/bin/uvicorn app:app --host 0.0.0.0 --port 8000
+Restart=always
+RestartSec=5
+Environment="PATH=/opt/field_obs/venv/bin"
+
+[Install]
+WantedBy=multi-user.target
+
+-----
+# Set up service
+sudo systemctl daemon-reload
+sudo systemctl enable field_obs.service
+sudo systemctl start field_obs.service
+sudo systemctl status field_obs.service
+
+# Check service logs
+sudo journalctl -u field_obs.service
+sudo journalctl -u field_obs.service -f (live)
+
+# Check service status
+sudo systemctl status field_obs.service

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snow Log</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <h1>Snow Event Log</h1>
+    <form id="snow_form" method="POST" action="/snow">
+        <label>Event Type:
+            <select name="event_type" id="event_type" onchange="toggleDepth()" required>
+                <option value="" disabled selected>Select Event</option>
+                <option value="fresh_snow">Fresh Snow</option>
+                <option value="dusting">Dusting</option>
+                <option value="melting">Melting</option>
+                <option value="complete_melt">Complete Melt</option>
+            </select>
+        </label>
+        <br>
+
+        <label>Zone:
+            <select name="snow_zone" id="snow_zone" required>
+                <option value="" disabled selected>Select Zone</option>
+                <option value="backyard">Backyard</option>
+                <option value="driveway">Driveway</option>
+            </select>
+        </label>
+        <br>
+
+        <label id="depth_label">
+            Depth (in):
+            <input type="number" step="0.1" name="depth_in" id="depth_input" onchange="validateDepthValues()">
+        </label>
+        <br>
+
+        <label>Snow Type:
+            <select name="snow_character">
+                <option value="">-- Optional --</option>
+                <option value="dry">Dry</option>
+                <option value="wet">Wet</option>
+                <option value="mixed">Mixed</option>
+            </select>
+        </label>
+        <br>
+
+        <label>
+            Notes:
+            <input type="text" name="notes">
+        </label>
+        <br>
+
+        <button type="submit">Log Event</button>
+    </form>
+
+    <a href="{{ url_for('menu') }}">Back to Menu</a>
+
+    <script>
+        function toggleDepth() {
+            const eventType = document.getElementById("event_type").value;
+            const depthLabel = document.getElementById("depth_label");
+            if (eventType === "dusting") {
+                depthLabel.style.display = "none";
+            } else if (eventType === "complete_melt") {
+                depthLabel.value = 0;
+                depthLabel.style.display = "none";
+            } else {
+                depthLabel.style.display = "block";
+            }
+        }
+
+        function validateDepthValues(){
+            const eventType = document.getElementById("event_type").value;
+            const depthLabel = parseFloat(document.getElementById("depth_label").value);
+            const depth = parseFloat(depthLabel);
+            if (eventType === "fresh_snow" || eventType === "melting") {
+                if (isNaN(depth) || depth < 0.1) {
+                    alert("Depth must be greater than .1 for fresh snow or melting.");
+                }
+            }
+        }
+
+        toggleDepth(); // initial load
+    </script>
+</body>
+</html>

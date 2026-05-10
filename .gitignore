@@ -1,0 +1,5 @@
+scratchpaper.txt
+.env
+/venv/
+/__pycache__/
+/.vscode/

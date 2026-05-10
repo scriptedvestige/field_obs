@@ -1,0 +1,164 @@
+/* Base styles */
+body {
+    font-family: "Lucida Sans", sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+form {
+    padding: 1.5rem;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px; /* don't get crazy wide on desktop */
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+    margin: 1rem auto; /* center it */
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    font-weight: bold;
+}
+
+select, input[type=number], input[type=text] {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    border: none;
+    margin-top: 0.25rem;
+}
+
+button {
+    padding: 0.75rem;
+    border-radius: 6px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#depth_label {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Dark mode / base palette */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #4a4a4a;
+        color: #ffffff;
+    }
+
+    h1 {
+        color: #0A3A1A;
+        text-align: center;
+    }
+
+    h2 {
+        color: #6F000F;
+        text-align: center;
+    }
+
+    form {
+        background-color: #0A3A1A;
+    }
+
+    button {
+        background-color: #DAA520;
+        color: #ffffff;
+    }
+
+    button:hover {
+        background-color: #6F000F;
+        color: #ffffff;
+    }
+
+    table th {
+        background-color: #0A3A1A;
+        color: #DAA520;
+    }
+
+    table td {
+        background-color: #DAA520;
+        color: #0A3A1A;
+    }
+
+    a {
+        color:#DAA520;
+        text-decoration: none;
+    }
+}
+
+/* Light mode fallback (optional) */
+@media (prefers-color-scheme: light) {
+    body {
+        background-color: #ffffff;
+        color: #000000;
+    }
+
+    h1 {
+        color: #0A3A1A;
+    }
+
+    h2 {
+        color: #6F000F;
+    }
+
+    form {
+        background-color: #6F000F;
+    }
+
+    button {
+        background-color: #0A3A1A;
+        color: #DAA520;
+    }
+
+    button:hover {
+        background-color: #0A3A1A;
+        color: #ffffff;
+    }
+
+    table th {
+        background-color: #6F000F;
+        color: #ffffff;
+    }
+
+    table td {
+        background-color: #DAA520;
+        color: #0A3A1A;
+    }
+
+    a {
+        color:#0A3A1A;
+        text-decoration: none;
+    }
+}
+
+/* Phone formatting */
+@media (max-width: 600px) {
+    body {
+        padding: 1rem;
+    }
+
+    form {
+        width: 95% !important;
+        max-width: 360px !important;
+        padding: 1rem !important;
+        gap: 0.7rem !important;
+        margin: 1rem !important;
+    }
+
+    select, input[type=number], input[type=text] {
+        padding: 0.8rem;
+        font-size: 0.95rem;
+    }
+}
