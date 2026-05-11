@@ -133,7 +133,7 @@ def log_watering(
     for zone in zones:
         cur.execute(
             """
-            INSERT INTO manual.watering_events (zone, duration, notes)
+            INSERT INTO manual.watering_events (zone, duration, application_method, notes)
             VALUES (%s, %s, %s, %s)
             """,
             (zone, duration, application_method, notes)
