@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}Migraine Log{% endblock %}
+
+{% block content %}
+    <h1>Migraine Event Log</h1>
+    <form id="migraine_form" method="POST" action="/migraine">
+
+        <label>
+            <input type="checkbox" id="onset_known" onchange="toggleDatetime('onset')">
+            Onset Known
+        </label>
+        <div id="onset_picker" style="display:none; margin-left: 1em;">
+            <label>Onset Date/Time:
+                <input type="datetime-local" name="onset" id="onset">
+            </label>
+        </div>
+        <br>
+
+        <label>
+            <input type="checkbox" id="ended_known" onchange="toggleDatetime('ended')">
+            Ended Known
+        </label>
+        <div id="ended_picker" style="display:none; margin-left: 1em;">
+            <label>Ended Date/Time:
+                <input type="datetime-local" name="ended" id="ended">
+            </label>
+        </div>
+        <br>
+
+        <label>Severity (1-5):
+            <select name="severity">
+                <option value="">-- Optional --</option>
+                <option value="1">1 - Mild</option>
+                <option value="2">2</option>
+                <option value="3">3 - Moderate</option>
+                <option value="4">4</option>
+                <option value="5">5 - Severe</option>
+            </select>
+        </label>
+        <br>
+
+        <label>
+            <input type="checkbox" id="excedrin_taken" onchange="toggleExcedrin()">
+            Took Excedrin
+        </label>
+        <div id="excedrin_picker" style="display:none; margin-left: 1em;">
+            <label>Pills:
+                <select name="excedrin_pills">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+            </label>
+        </div>
+        <br>
+
+        <label>Yesterday's Hydration:
+            <select name="hydration_yesterday">
+                <option value="">-- Optional --</option>
+                <option value="poor">Poor</option>
+                <option value="normal">Normal</option>
+                <option value="good">Good</option>
+            </select>
+        </label>
+        <br>
+
+        <label>Notes:
+            <input type="text" name="notes">
+        </label>
+        <br>
+
+        <button type="submit" onclick="return validateForm()">Log Event</button>
+    </form>
+{% endblock %}
+
+{% block back_link %}
+    <a href="{{ url_for('menu') }}">Back to Menu</a>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function toggleDatetime(field) {
+        const checkbox = document.getElementById(field + '_known');
+        const picker = document.getElementById(field + '_picker');
+        picker.style.display = checkbox.checked ? 'block' : 'none';
+        if (!checkbox.checked) {
+            document.getElementById(field).value = '';
+        }
+    }
+
+    function toggleExcedrin() {
+        const checkbox = document.getElementById('excedrin_taken');
+        const picker = document.getElementById('excedrin_picker');
+        picker.style.display = checkbox.checked ? 'block' : 'none';
+    }
+
+    function validateForm() {
+        const onsetChecked = document.getElementById('onset_known').checked;
+        const endedChecked = document.getElementById('ended_known').checked;
+        if (!onsetChecked && !endedChecked) {
+            alert('Please provide at least one of Onset or Ended.');
+            return false;
+        }
+        const onset = document.getElementById('onset').value;
+        const ended = document.getElementById('ended').value;
+        if (onsetChecked && !onset) {
+            alert('Onset is checked but no date/time selected.');
+            return false;
+        }
+        if (endedChecked && !ended) {
+            alert('Ended is checked but no date/time selected.');
+            return false;
+        }
+        return true;
+    }
+</script>
+{% endblock %}

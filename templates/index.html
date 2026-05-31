@@ -4,8 +4,13 @@
 
 {% block content %}
     <h1>Manual Event Logging Menu</h1>
+    <h3>Yard Events</h3>
     <h3><a href="{{ url_for('fertilizer') }}">Fertilizer Events</a></h3>
     <h3><a href="{{ url_for('snow') }}">Snow Events</a></h3>
     <h3><a href="{{ url_for('treatment') }}">Treatment Events</a></h3>
     <h3><a href="{{ url_for('watering') }}">Watering Events</a></h3>
+    <br><br>
+    <h3>Health Events</h3>
+    <h3><a href="{{ url_for('hydration') }}">Hydration Events</a></h3>
+    <h3><a href="{{ url_for('migraine') }}">Migraine Events</a></h3>
 {% endblock %}

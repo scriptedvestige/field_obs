@@ -3,6 +3,8 @@ from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from database import get_conn
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -143,3 +145,71 @@ def log_watering(
     conn.close()
 
     return RedirectResponse("/watering", status_code=303)
+
+# Migraine Events
+@app.get("/migraine", name="migraine")
+def migraine_form(request: Request):
+    return templates.TemplateResponse("migraine.html", {"request": request})
+
+@app.post("/migraine")
+def log_migraine(
+    onset: str | None = Form(None),
+    ended: str | None = Form(None),
+    severity: int | None = Form(None),
+    excedrin_pills: int | None = Form(None),
+    hydration_yesterday: str | None = Form(None),
+    notes: str | None = Form(None),
+):
+    
+    # Handling timezone, enter as local time, insert to db in UTC
+    pacific = ZoneInfo("America/Los_Angeles")
+
+    onset_dt = datetime.fromisoformat(onset).replace(tzinfo=pacific).astimezone(ZoneInfo("UTC")) if onset else None
+    ended_dt = datetime.fromisoformat(ended).replace(tzinfo=pacific).astimezone(ZoneInfo("UTC")) if ended else None
+
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        """
+        INSERT INTO manual.migraine_events 
+            (onset, ended, severity, excedrin_pills, hydration_yesterday, notes)
+        VALUES (%s, %s, %s, %s, %s, %s)
+        """,
+        (onset_dt, ended_dt, severity, excedrin_pills, hydration_yesterday, notes)
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return RedirectResponse("/migraine", status_code=303)
+
+# Hydration Events
+@app.get("/hydration", name="hydration")
+def hydration_form(request: Request):
+    return templates.TemplateResponse("hydration.html", {"request": request})
+
+@app.post("/hydration")
+def log_hydration(
+    consumed_at: str = Form(...),
+    beverage_type: str = Form(...),
+    volume_oz: float = Form(...),
+    notes: str | None = Form(None),
+):
+    pacific = ZoneInfo("America/Los_Angeles")
+    consumed_at_dt = datetime.fromisoformat(consumed_at).replace(tzinfo=pacific).astimezone(ZoneInfo("UTC"))
+
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        """
+        INSERT INTO manual.hydration_events
+            (consumed_at, beverage_type, volume_oz, notes)
+        VALUES (%s, %s, %s, %s)
+        """,
+        (consumed_at_dt, beverage_type, volume_oz, notes)
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return RedirectResponse("/hydration", status_code=303)
