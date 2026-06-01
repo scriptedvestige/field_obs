@@ -14,6 +14,7 @@
         <label>Beverage:
             <select name="beverage_type" required>
                 <option value="" disabled selected>Select Beverage</option>
+                <option value="protein_shake">Protein Shake</option>
                 <option value="water">Water</option>
                 <option value="sports_drink">Sports Drink</option>
                 <option value="coffee">Coffee</option>
@@ -26,10 +27,12 @@
 
         <label>Volume (oz):
             <div>
+                <button type="button" onclick="setOz(8)">8oz</button>
                 <button type="button" onclick="setOz(12)">12oz</button>
                 <button type="button" onclick="setOz(14)">14oz</button>
                 <button type="button" onclick="setOz(20)">20oz</button>
-                <button type="button" onclick="setOz(32)">32oz</button>
+                <button type="button" onclick="setOz(26)">26oz</button>
+                <button type="button" onclick="setOz(32)">38oz</button>
             </div>
             <input type="number" step="0.1" name="volume_oz" id="volume_oz" min="0.1" required>
         </label>

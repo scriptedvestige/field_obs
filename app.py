@@ -146,10 +146,22 @@ def log_watering(
 
     return RedirectResponse("/watering", status_code=303)
 
-# Migraine Events
+# Migraine Events, selecting open events with no end date and time
 @app.get("/migraine", name="migraine")
 def migraine_form(request: Request):
-    return templates.TemplateResponse("migraine.html", {"request": request})
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT id, onset FROM manual.migraine_events WHERE ended IS NULL ORDER BY onset DESC"
+    )
+    open_migraines = cur.fetchall()
+    cur.close()
+    conn.close()
+    return templates.TemplateResponse("migraine.html", {
+        "request": request,
+        "open_migraines": open_migraines
+    })
+
 
 @app.post("/migraine")
 def log_migraine(
@@ -157,6 +169,7 @@ def log_migraine(
     ended: str | None = Form(None),
     severity: int | None = Form(None),
     excedrin_pills: int | None = Form(None),
+    workout_yesterday: str | None = Form(None),
     hydration_yesterday: str | None = Form(None),
     notes: str | None = Form(None),
 ):
@@ -172,15 +185,35 @@ def log_migraine(
     cur.execute(
         """
         INSERT INTO manual.migraine_events 
-            (onset, ended, severity, excedrin_pills, hydration_yesterday, notes)
-        VALUES (%s, %s, %s, %s, %s, %s)
+            (onset, ended, severity, excedrin_pills, hydration_yesterday, notes, workout_yesterday)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
         """,
-        (onset_dt, ended_dt, severity, excedrin_pills, hydration_yesterday, notes)
+        (onset_dt, ended_dt, severity, excedrin_pills, hydration_yesterday, notes, workout_yesterday)
     )
     conn.commit()
     cur.close()
     conn.close()
 
+    return RedirectResponse("/migraine", status_code=303)
+
+# Close a migraine entry with an end time, updating a row instead of creating a new row.
+@app.post("/migraine/close")
+def close_migraine(
+    migraine_id: int = Form(...),
+    ended: str = Form(...),
+):
+    pacific = ZoneInfo("America/Los_Angeles")
+    ended_dt = datetime.fromisoformat(ended).replace(tzinfo=pacific).astimezone(ZoneInfo("UTC"))
+    
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE manual.migraine_events SET ended = %s WHERE id = %s",
+        (ended_dt, migraine_id)
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
     return RedirectResponse("/migraine", status_code=303)
 
 # Hydration Events

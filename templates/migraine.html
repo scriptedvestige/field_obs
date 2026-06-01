@@ -47,6 +47,7 @@
         <div id="excedrin_picker" style="display:none; margin-left: 1em;">
             <label>Pills:
                 <select name="excedrin_pills">
+                    <option value="">--</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -55,9 +56,18 @@
         </div>
         <br>
 
+        <label>Yesterday's Workout</label>
+            <select name="workout_yesterday">
+                <option value="">--Optional--</option>
+                <option value="none">None</option>
+                <option value="light">Light</option>
+                <option value="moderate">Moderate</option>
+                <option value="hard">Hard</option>
+            </select>
+
         <label>Yesterday's Hydration:
             <select name="hydration_yesterday">
-                <option value="">-- Optional --</option>
+                <option value="">--Optional--</option>
                 <option value="poor">Poor</option>
                 <option value="normal">Normal</option>
                 <option value="good">Good</option>
@@ -72,6 +82,26 @@
 
         <button type="submit" onclick="return validateForm()">Log Event</button>
     </form>
+
+    {% if open_migraines %}
+    <h2>Close Open Migraine</h2>
+    <form method="POST" action="/migraine/close">
+        <label>Select Migraine:
+            <select name="migraine_id" required>
+                {% for m in open_migraines %}
+                <option value="{{ m['id'] }}">{{ m['onset'].strftime('%Y-%m-%d %H:%M') if m['onset'] else 'No onset' }} (ID: {{ m['id'] }})</option>
+                {% endfor %}
+            </select>
+        </label>
+        <br>
+        <label>Ended:
+            <input type="datetime-local" name="ended" required>
+        </label>
+        <br>
+        <button type="submit">Close Migraine</button>
+    </form>
+    {% endif %}
+
 {% endblock %}
 
 {% block back_link %}
@@ -89,11 +119,13 @@
         }
     }
 
-    function toggleExcedrin() {
-        const checkbox = document.getElementById('excedrin_taken');
-        const picker = document.getElementById('excedrin_picker');
-        picker.style.display = checkbox.checked ? 'block' : 'none';
-    }
+function toggleExcedrin() {
+    const checkbox = document.getElementById('excedrin_taken');
+    const picker = document.getElementById('excedrin_picker');
+    const select = document.getElementById('excedrin_pills_select');
+    picker.style.display = checkbox.checked ? 'block' : 'none';
+    select.disabled = !checkbox.checked;
+}
 
     function validateForm() {
         const onsetChecked = document.getElementById('onset_known').checked;
